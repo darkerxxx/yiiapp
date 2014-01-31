@@ -14,9 +14,13 @@ class UserIdentity extends CUserIdentity
 	 * In practical applications, this should be changed to authenticate
 	 * against some persistent user identity storage (e.g. database).
 	 * @return boolean whether authentication succeeds.
-	 */
+	 *//*
 	public function authenticate()
 	{
+		//var_dump($_GET['login']);
+		//$users = array();
+		
+		
 		$users=array(
 			// username => password
 			'demo'=>'demo',
@@ -29,5 +33,51 @@ class UserIdentity extends CUserIdentity
 		else
 			$this->errorCode=self::ERROR_NONE;
 		return !$this->errorCode;
+	}*/
+	/*
+	private $_id;
+	public function authenticate()
+	{
+		$record=User::model()->findByAttributes(array('login'=>$this->username));
+		if($record===null)
+			$this->errorCode=self::ERROR_USERNAME_INVALID;
+		else if(!CPasswordHelper::verifyPassword($this->password,$record->password))
+			$this->errorCode=self::ERROR_PASSWORD_INVALID;
+		else
+		{
+			$this->_id=$record->id;
+			$this->setState('title', $record->title);
+			$this->errorCode=self::ERROR_NONE;
+		}
+		return !$this->errorCode;
 	}
+	
+	public function getId()
+	{
+		return $this->_id;
+	}*/
+	private $_id;
+	
+	public function authenticate()
+	{
+		$login=strtolower($this->login);
+		$user=User::model()->find('LOWER(login)=?',array($login));
+		if($user===null)
+			$this->errorCode=self::ERROR_USERNAME_INVALID;
+		else if(!$user->validatePassword($this->password))
+			$this->errorCode=self::ERROR_PASSWORD_INVALID;
+		else
+		{
+			$this->_id=$user->id;
+			$this->login=$user->login;
+			$this->errorCode=self::ERROR_NONE;
+		}
+		return $this->errorCode==self::ERROR_NONE;
+	}
+	
+	public function getId()
+	{
+		return $this->_id;
+	}
+		
 }

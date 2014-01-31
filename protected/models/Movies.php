@@ -77,10 +77,10 @@ class Movies extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('movieid',$this->movieid);
+		//$criteria->compare('movieid',$this->movieid);
 		$criteria->compare('title',$this->title,true);
-		$criteria->compare('year',$this->year);
-		$criteria->compare('description',$this->description,true);
+		//$criteria->compare('year',$this->year);
+		//$criteria->compare('description',$this->description,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

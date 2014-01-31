@@ -7,8 +7,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Create Movies', 'url'=>array('create')),
-	array('label'=>'Manage Movies', 'url'=>array('admin')),
+	array('label'=>'Add new movie', 'url'=>array('create')),
+	array('label'=>'Manage movies', 'url'=>array('admin')),
 );
 ?>
 
