@@ -1,101 +1,110 @@
 <?php
+
+/**
+ * This is the model class for table "user".
+ *
+ * The followings are the available columns in table 'user':
+ * @property string $username
+ * @property string $password
+ */
 class User extends CActiveRecord
 {
-	// для капчи
-	//public $verifyCode;
-	// для поля "повтор пароля"
 	public $password2;
-	 
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
-	public function tableName()
-	{
-		return 'users';
-	}
 	
 	/**
-	 * Правила валидации
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'user';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
 	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
 		return array(
-				// логин, пароль не должны быть больше 128-и символов, и меньше трёх
-				array('login', 'length', 'max'=>24, 'min' => 4),
-				array('password', 'length', 'max'=>32, 'min' => 4),
-				// логин, пароль не должны быть пустыми
-				array('login, password', 'required'),
-				// для сценария registration поле passwd должно совпадать с полем passwd2
-				array('password', 'compare', 'compareAttribute'=>'password2', 'on'=>'registration'),
-				array('password', 'authenticate', 'on' => 'login'),
-				// правило для проверки капчи что капча совпадает с тем что ввел пользователь
-				//array('verifyCode', 'captcha', 'allowEmpty'=>!extension_loaded('gd')),
-				//array('login', 'match', 'pattern' => '/^[A-Za-z0-9А-Яа-я\s,]+$/u','message' => 'Логин содержит недопустимые символы.'),
-				//array('login', 'match', 'pattern' => '/^[A-Za-z0-9А-Яа-я\s,]+$/u','message' => 'Login contains invalid symbols.'),
+			array('username, password', 'required'),
+			array('username', 'length', 'max'=>24),
+			array('password', 'length', 'max'=>32),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('username, password', 'safe', 'on'=>'search'),
+			array('password2', 'required', 'on'=>'registration'),
+			array('password2', 'compare', 'compareAttribute'=>'password', 'on'=>'registration'),
 		);
 	}
-	
+
 	/**
-	 * Список атрибутов которые могут быть массово присвоены
-	 * в любом из наших сценариев
-	 *
-	 * @return unknown
+	 * @return array relational rules.
 	 */
-	public function safeAttributes()
+	public function relations()
 	{
-		//return array('login', 'passwd', 'passwd2', 'verifyCode');
-		return array('login', 'password', 'password2');
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+		);
 	}
-	
+
 	/**
-	 * Список синонимов
+	 * @return array customized attribute labels (name=>label)
 	 */
 	public function attributeLabels()
 	{
 		return array(
-				'login'     => 'Login',
-				'password'  => 'Password',
-				'password2' => 'Repeat password',
+			'username' => 'Username',
+			'password' => 'Password',
 		);
 	}
-	
-	public function authenticate($attribute,$params)
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
 	{
-		// Проверяем были ли ошибки в других правилах валидации.
-		// если были - нет смысла выполнять проверку
-		if(!$this->hasErrors())
-		{
-			// Создаем экземпляр класса UserIdentity
-			// и передаем в его конструктор введенный пользователем логин и пароль (с формы)
-			$identity= new UserIdentity($this->login, $this->password);
-			// Выполняем метод authenticate (о котором мы с вами говорили пару абзацев назад)
-			// Он у нас проверяет существует ли такой пользователь и возвращает ошибку (если она есть)
-			// в $identity->errorCode
-			$identity->authenticate();
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('username',$this->username,true);
+		$criteria->compare('password',$this->password,true);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return User the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
 	
-			// Теперь мы проверяем есть ли ошибка..
-			switch($identity->errorCode)
-			{
-				// Если ошибки нету...
-				case UserIdentity::ERROR_NONE: {
-					// Данная строчка говорит что надо выдать пользователю
-					// соответствующие куки о том что он зарегистрирован, срок действий
-					// у которых указан вторым параметром.
-					Yii::app()->user->login($identity, 0);
-					break;
-				}
-				case UserIdentity::ERROR_USERNAME_INVALID: {
-					// Если логин был указан наверно - создаем ошибку
-					$this->addError('login','User does not exist!');
-					break;
-				}
-				case UserIdentity::ERROR_PASSWORD_INVALID: {
-					// Если пароль был указан наверно - создаем ошибку
-					$this->addError('password','Invalid password!');
-					break;
-				}
-			}
-		}
+	public function validatePassword($password)
+	{
+		//return CPasswordHelper::verifyPassword($password,$this->password);
+		return CPasswordHelper::same($password,$this->password);
+	}
+	
+	public function hashPassword($password)
+	{
+		return CPasswordHelper::hashPassword($password);
 	}
 }

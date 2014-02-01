@@ -122,9 +122,49 @@ class MoviesController extends Controller
 	 */
 	public function actionIndex()
 	{
+		//$criteria = new CDbCriteria();
+		//$sort = new CSort();
+		//$sort->sortVar = 'title';
+		//$sort->defaultOrder = 'title ASC';
+		//$sort->defaultOrder = 'title' => CSort::SORT_ASC;
+		/*$sort->attributes = array(
+				'title'=>array(
+						'label'=>'Title',
+						'asc'=>'title ASC',
+						'desc'=>'title DESC',
+						'default'=>'asc',
+				),
+				'price'=>array(
+						'label'=>'Year',
+						'asc'=>'year ASC',
+						'desc'=>'year DESC',
+						'default'=>'asc',
+				),
+		);
+		*/
 		$dataProvider=new CActiveDataProvider('Movies');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
+			//'sort' => $sort,
+			//'defaultOrder' => array('title' => CSort::SORT_ASC),
+			'sort' => array(
+					'attributes'=>array(
+							'title'=>array(
+									'asc'=>'rating ASC',
+									'desc'=>'rating DESC',
+									//по умолчанию, сортируем поле rating по убыванию (desc)
+									'default'=>'asc',
+							),
+							'year'=>array(
+									'asc'=>'created_at ASC',
+									'desc'=>'created_at DESC',
+									'default'=>'asc',
+							)
+					),
+					'defaultOrder'=>array(
+							'title'=>CSort::SORT_ASC,
+					)
+		),
 		));
 	}
 
@@ -170,4 +210,5 @@ class MoviesController extends Controller
 			Yii::app()->end();
 		}
 	}
+	
 }

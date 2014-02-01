@@ -57,27 +57,29 @@ class UserIdentity extends CUserIdentity
 		return $this->_id;
 	}*/
 	private $_id;
-	
-	public function authenticate()
-	{
-		$login=strtolower($this->login);
-		$user=User::model()->find('LOWER(login)=?',array($login));
-		if($user===null)
-			$this->errorCode=self::ERROR_USERNAME_INVALID;
-		else if(!$user->validatePassword($this->password))
-			$this->errorCode=self::ERROR_PASSWORD_INVALID;
-		else
-		{
-			$this->_id=$user->id;
-			$this->login=$user->login;
-			$this->errorCode=self::ERROR_NONE;
-		}
-		return $this->errorCode==self::ERROR_NONE;
-	}
-	
-	public function getId()
-	{
-		return $this->_id;
-	}
+ 
+    public function authenticate()
+    {
+        $username=strtolower($this->username);
+        $user=User::model()->find('LOWER(username)=?',array($username));
+    	//$user=User::model()->findByAttributes(array('username'=>$this->username));
+        if($user===null)
+            $this->errorCode=self::ERROR_USERNAME_INVALID;
+        else if(!$user->validatePassword($this->password))
+        	$this->errorCode=self::ERROR_PASSWORD_INVALID;
+        else
+        {
+            //$this->_id=$user->id;
+        	$this->_id=$user->username;
+            $this->username=$user->username;
+            $this->errorCode=self::ERROR_NONE;
+        }
+        return $this->errorCode==self::ERROR_NONE;
+    }
+ 
+    public function getId()
+    {
+        return $this->_id;
+    }
 		
 }

@@ -1,22 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "movies".
+ * This is the model class for table "rating".
  *
- * The followings are the available columns in table 'movies':
+ * The followings are the available columns in table 'rating':
  * @property integer $movieid
- * @property string $title
- * @property integer $year
- * @property string $description
+ * @property string $username
+ * @property string $value
  */
-class Movies extends CActiveRecord
+class Rating extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'movies';
+		return 'rating';
 	}
 
 	/**
@@ -27,11 +26,13 @@ class Movies extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('title, year, description', 'required'),
-			array('year', 'numerical', 'integerOnly'=>true),
+			array('movieid, username, value', 'required'),
+			array('movieid', 'numerical', 'integerOnly'=>true),
+			array('username', 'length', 'max'=>24),
+			array('value', 'length', 'max'=>1),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('movieid, title, year, description', 'safe', 'on'=>'search'),
+			array('movieid, username, value', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,9 +54,8 @@ class Movies extends CActiveRecord
 	{
 		return array(
 			'movieid' => 'Movieid',
-			'title' => 'Title',
-			'year' => 'Year',
-			'description' => 'Description',
+			'username' => 'Username',
+			'value' => 'Value',
 		);
 	}
 
@@ -77,10 +77,9 @@ class Movies extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		//$criteria->compare('movieid',$this->movieid);
-		$criteria->compare('title',$this->title,true);
-		//$criteria->compare('year',$this->year);
-		//$criteria->compare('description',$this->description,true);
+		$criteria->compare('movieid',$this->movieid);
+		$criteria->compare('username',$this->username,true);
+		//$criteria->compare('value',$this->value,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -91,7 +90,7 @@ class Movies extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Movies the static model class
+	 * @return Rating the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

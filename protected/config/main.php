@@ -57,6 +57,8 @@ return array(
 			'emulatePrepare' => true,
 			'username' => 'root',
 			'password' => '',
+			//'username' => 'gera',
+			//'password' => 'gera',
 			'charset' => 'utf8',
 		),
 		
