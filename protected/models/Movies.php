@@ -31,7 +31,9 @@ class Movies extends CActiveRecord
 			array('year', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('movieid, title, year, description', 'safe', 'on'=>'search'),
+			//array('movieid, title, year, description', 'safe', 'on'=>'search'),
+			array('title, year', 'safe', 'on'=>'search'),
+			//array('movieid, description','','on'=>'search')
 		);
 	}
 
@@ -79,7 +81,7 @@ class Movies extends CActiveRecord
 
 		//$criteria->compare('movieid',$this->movieid);
 		$criteria->compare('title',$this->title,true);
-		//$criteria->compare('year',$this->year);
+		$criteria->compare('year',$this->year);
 		//$criteria->compare('description',$this->description,true);
 
 		return new CActiveDataProvider($this, array(

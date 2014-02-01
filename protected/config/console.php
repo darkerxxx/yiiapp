@@ -19,10 +19,8 @@ return array(
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
 			'emulatePrepare' => true,
-			//'username' => 'root',
-			//'password' => '',
-			'username' => 'gera',
-			'password' => 'gera',
+			'username' => 'root',
+			'password' => '',
 			'charset' => 'utf8',
 		),
 		

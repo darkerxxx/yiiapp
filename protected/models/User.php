@@ -57,6 +57,7 @@ class User extends CActiveRecord
 		return array(
 			'username' => 'Username',
 			'password' => 'Password',
+			'password2' => 'Re-type password'	
 		);
 	}
 

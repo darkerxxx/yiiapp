@@ -4,10 +4,8 @@
 $this->pageTitle=Yii::app()->name;
 ?>
 
-<h1>Welcome to <i><?php echo CHtml::encode(Yii::app()->name); 
-//echo var_dump(Yii::app()->user);
-?></i></h1>
-
+<h1>Welcome to <i><?php echo CHtml::encode(Yii::app()->name); ?></i></h1>
+<!--  
 <p>Congratulations! You have successfully created your Yii application.</p>
 
 <p>You may change the content of this page by modifying the following two files:</p>
@@ -20,3 +18,10 @@ $this->pageTitle=Yii::app()->name;
 the <a href="http://www.yiiframework.com/doc/">documentation</a>.
 Feel free to ask in the <a href="http://www.yiiframework.com/forum/">forum</a>,
 should you have any questions.</p>
+-->
+</br>
+<p>To login, go to Login page.</p>
+<p>To registr on webpage, go to Register page.</p>
+<p>To browse movie database, go to Movie database page.</p>
+<p>You also can add a new movie. For this, navigate threw menu on Movie database page </p>
+<p>Note: you must be a user, to add a new movie</p>

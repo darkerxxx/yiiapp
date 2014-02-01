@@ -122,37 +122,15 @@ class MoviesController extends Controller
 	 */
 	public function actionIndex()
 	{
-		//$criteria = new CDbCriteria();
-		//$sort = new CSort();
-		//$sort->sortVar = 'title';
-		//$sort->defaultOrder = 'title ASC';
-		//$sort->defaultOrder = 'title' => CSort::SORT_ASC;
-		/*$sort->attributes = array(
-				'title'=>array(
-						'label'=>'Title',
-						'asc'=>'title ASC',
-						'desc'=>'title DESC',
-						'default'=>'asc',
-				),
-				'price'=>array(
-						'label'=>'Year',
-						'asc'=>'year ASC',
-						'desc'=>'year DESC',
-						'default'=>'asc',
-				),
-		);
-		*/
+		
 		$dataProvider=new CActiveDataProvider('Movies');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
-			//'sort' => $sort,
-			//'defaultOrder' => array('title' => CSort::SORT_ASC),
 			'sort' => array(
 					'attributes'=>array(
 							'title'=>array(
 									'asc'=>'rating ASC',
 									'desc'=>'rating DESC',
-									//по умолчанию, сортируем поле rating по убыванию (desc)
 									'default'=>'asc',
 							),
 							'year'=>array(
@@ -164,7 +142,7 @@ class MoviesController extends Controller
 					'defaultOrder'=>array(
 							'title'=>CSort::SORT_ASC,
 					)
-		),
+			),
 		));
 	}
 
@@ -209,6 +187,26 @@ class MoviesController extends Controller
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+	/**
+	 * @todo in progress. May be needed for rating system.
+	 */
+	public function actionRate()
+	{
+		/*$connection=Yii::app()->db;
+		$query = sprintf("INSERT INTO imdb.rating
+		VALUES movieid, username, value
+	    WHERE 	movieid='%s',
+				username='%s'
+				value='%s'
+				",
+				mysql_real_escape_string($model->movieid),
+				mysql_real_escape_string(Yii::app()->user->id),
+				mysql_real_escape_string()
+		);
+		$command=$connection->createCommand($query);
+		$dataReader=$command->query();
+		$page->refresh();*/
 	}
 	
 }

@@ -31,51 +31,84 @@ $this->menu=array(
 )); ?>
 
 <?php 
-/**
- * 
- */
-/*$rating;
-$counter;
-//$model->movieid;
-//Yii::app()->user->id;
-$query = sprintf("SELECT value FROM imdb.rating
-    WHERE movieid='%s'",
-	mysql_real_escape_string($model->movieid)
-);
-$result = mysql_query($query);
-if (!$result) {
-	$message  = 'Wrong query: ' . mysql_error() . "\n";
-	$message .= 'Query: ' . $query;
-	die($message);
-}
-while ($row = mysql_fetch_assoc($result)) {
-	$counter++;
-	$rating +=  $row['value'];
-}
-$rating = $rating/$counter;
-echo $rating;
-mysql_free_result($result);
+/*Yii::app()->clientScript->registerScript('rate', "
+$('.rate-button').click(function(){
+	$('.search-form').toggle();
+	return false;
+});
+$('.search-form form').submit(function(){
+	$('#movies-list').yiiCListView('update', {
+		data: $(model).serialize()
+	});
+	return false;
+});
+");
 */
+/**
+ * Right now, shows dropdown list for rating if user is logged in.
+ * @todo Rate button isn't working. In progress.
+ * @todo Also needed to set IF for already rated user. *
+ */
+if(!Yii::app()->user->isGuest){
+$modelX = new Rating;
+$attribute = 'value';
+$data = array ('1','2','3','4','5');
+echo "(Function in progress!) Rate this movie: ";
+echo CHtml::activeDropDownList($modelX,$attribute,$data);
+echo CHtml::submitButton('Rate');
+//var_dump($modelX->value);
+}
+else echo "You must be logged in, to rate movies! (function in progress!)";
+?>
+
+
+
+
+
+<?php 
+/**
+ * Function for rating calculation
+ */
 function countRating($model){
-$rating=0;
-$counter=0;
-$connection=Yii::app()->db;
-$query = sprintf("SELECT value FROM imdb.rating
-    WHERE movieid='%s'",
-		mysql_real_escape_string($model->movieid)
-);
-$command=$connection->createCommand($query);
-$dataReader=$command->query();
-foreach($dataReader as $row)
+	$rating=0;
+	$counter=0;
+	$connection=Yii::app()->db;
+	$query = sprintf("SELECT value FROM imdb.rating
+	    WHERE movieid='%s'",
+			mysql_real_escape_string($model->movieid)
+	);
+	$command=$connection->createCommand($query);
+	$dataReader=$command->query();
+	foreach($dataReader as $row)
+	{
+		$counter++;
+		$rating += $row['value'];
+	}
+	if($counter != 0){
+		$rating = $rating / $counter;
+	}
+	else return 0;
+	return round($rating, 2);
+}
+/**
+ * Function for rating submission (?)
+ */
+function submitRating($model,$page,$modelX)
 {
-	$counter++;
-	$rating += $row['value'];
-}
-if($counter != 0){
-	$rating = $rating / $counter;
-}
-else return 0;
-return round($rating, 2);
+	$connection=Yii::app()->db;
+	$query = sprintf("INSERT INTO imdb.rating 
+		VALUES movieid, username, value
+	    WHERE 	movieid='%s',
+				username='%s'
+				value='%s'
+				",
+			mysql_real_escape_string($model->movieid),
+			mysql_real_escape_string(Yii::app()->user->id),
+			mysql_real_escape_string($modelX->value)
+	);
+	$command=$connection->createCommand($query);
+	$dataReader=$command->query();
+	$page->refresh();
 }
 ?>
 
